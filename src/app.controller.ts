@@ -4,7 +4,10 @@ import { SupabaseService } from './supabase/supabase.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService, private supabaseService: SupabaseService) {}
+  constructor(
+    private readonly appService: AppService,
+    private supabaseService: SupabaseService,
+  ) {}
 
   @Get()
   getHello(): string {
