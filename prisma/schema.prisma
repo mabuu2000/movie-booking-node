@@ -11,16 +11,72 @@ datasource db {
 }
 
 model User {
-  id String @id @default(dbgenerated("uuid_generate_v4()"))
-
-  userName    String @unique @map("user_name") @db.VarChar(50)
-  email       String @unique @map("email") @db.VarChar(50)
-  phoneNumber String @unique @map("phone_number") @db.VarChar(50)
-  dob         String @map("dob") @db.VarChar(50)
-  hash        String @map("hash") @db.VarChar(255)
-
-  firstName String @map("first_name") @db.VarChar(50)
-  lastName  String @map("last_name") @db.VarChar(50)
+  id          String   @id @default(dbgenerated("uuid_generate_v4()"))
+  userName    String   @unique @map("user_name") @db.VarChar(50)
+  email       String   @unique @map("email") @db.VarChar(50)
+  phoneNumber String   @unique @map("phone_number") @db.VarChar(50)
+  dob         String   @map("dob") @db.VarChar(50)
+  hash        String   @map("hash") @db.VarChar(255)
+  firstName   String   @map("first_name") @db.VarChar(50)
+  lastName    String   @map("last_name") @db.VarChar(50)
+  ticket      Ticket[]
 
   @@map("user")
+}
+
+model Movie {
+  movieId     String     @unique @map("movie_id") @db.VarChar(50)
+  description String     @map("description") @db.Text
+  trailer     String     @map("trailer") @db.Text
+  ongoing     Boolean    @map("ongoing") @db.Boolean
+  rating      Decimal    @map("rating") @db.Decimal(1, 1)
+  releaseDate DateTime   @map("release_date") @db.Date
+  banner      String     @map("banner") @db.Text
+  poster      String     @map("poster") @db.Text
+  title       String     @map("title") @db.VarChar(50)
+  genre       String     @map("genre") @db.VarChar(50)
+  showTime    Showtime[]
+
+  @@map("movie")
+}
+
+model Cinema {
+  cinemaId     String     @unique @map("cinema_id") @db.VarChar(10)
+  cinemaNumber String     @map("cinema_number") @db.VarChar(10)
+  showTime     Showtime[]
+
+  @@map("cinema")
+}
+
+model Seat {
+  seatId     String   @unique @map("seat_id") @db.VarChar(255)
+  seatNumber String   @map("seat_number") @db.VarChar(255)
+  ticket     Ticket[]
+
+  @@map("seat")
+}
+
+model Showtime {
+  showtimeId String   @unique @map("showtime_id") @db.VarChar(50)
+  cinemaId   String
+  start      DateTime @map("start_time") @db.Timestamptz()
+  end        DateTime @map("end_time") @db.Timestamptz()
+  movieId    String
+  cinema     Cinema   @relation(fields: [cinemaId], references: [cinemaId], onDelete: Cascade)
+  movie      Movie    @relation(fields: [movieId], references: [movieId], onDelete: Cascade)
+  ticket     Ticket[]
+
+  @@map("showtime")
+}
+
+model Ticket {
+  id         String   @id @default(dbgenerated("uuid_generate_v4()"))
+  userName   String
+  seatId     String
+  showtimeId String
+  user       User     @relation(fields: [userName], references: [userName])
+  seat       Seat     @relation(fields: [seatId], references: [seatId], onDelete: Cascade)
+  showtime   Showtime @relation(fields: [showtimeId], references: [showtimeId], onDelete: Cascade)
+
+  @@map("ticket")
 }
