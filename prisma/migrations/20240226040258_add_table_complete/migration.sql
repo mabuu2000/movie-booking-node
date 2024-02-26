@@ -1,3 +1,5 @@
+-- Create extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- CreateTable
 CREATE TABLE "movie" (
     "movie_id" VARCHAR(50) NOT NULL,
