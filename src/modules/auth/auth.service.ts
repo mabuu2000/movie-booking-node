@@ -39,11 +39,11 @@ export class AuthService {
       }
     }
   }
-  async signin(dto: { userName: string; password: string }) {
-    // find user by username
+  async signin(dto: { username: string; password: string }) {
+    // find user by email
     const user = await this.prisma.user.findUnique({
       where: {
-        userName: dto.userName,
+        userName: dto.username,
       },
     });
     // if user doesn't exist

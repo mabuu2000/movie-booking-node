@@ -22,3 +22,4 @@ CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "user_phone_number_key" ON "user"("phone_number");
+
