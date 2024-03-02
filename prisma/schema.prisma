@@ -25,23 +25,22 @@ model User {
 }
 
 model Movie {
-  movieId     String     @unique @map("movie_id") @db.VarChar(50)
-  description String     @map("description") @db.Text
-  trailer     String     @map("trailer") @db.Text
-  ongoing     Boolean    @map("ongoing") @db.Boolean
-  rating      Decimal    @map("rating") @db.Decimal(1, 1)
+  id          String     @id @db.VarChar(50)
+  description String     @db.Text
+  trailer     String     @db.Text
+  ongoing     Boolean    @db.Boolean
+  rating      Decimal    @db.Decimal(1, 1)
   releaseDate DateTime   @map("release_date") @db.Date
-  banner      String     @map("banner") @db.Text
-  poster      String     @map("poster") @db.Text
-  title       String     @map("title") @db.VarChar(50)
-  genre       String     @map("genre") @db.VarChar(50)
+  poster      String     @db.Text
+  title       String     @db.VarChar(50)
+  genre       String     @db.VarChar(50)
   showTime    Showtime[]
 
   @@map("movie")
 }
 
 model Cinema {
-  cinemaId     String     @unique @map("cinema_id") @db.VarChar(10)
+  id           String     @id @db.VarChar(10)
   cinemaNumber String     @map("cinema_number") @db.VarChar(10)
   showTime     Showtime[]
 
@@ -49,7 +48,7 @@ model Cinema {
 }
 
 model Seat {
-  seatId     String   @unique @map("seat_id") @db.VarChar(255)
+  id         String   @id @db.VarChar(255)
   seatNumber String   @map("seat_number") @db.VarChar(255)
   ticket     Ticket[]
 
@@ -57,14 +56,14 @@ model Seat {
 }
 
 model Showtime {
-  showtimeId String   @unique @map("showtime_id") @db.VarChar(50)
-  cinemaId   String
-  start      DateTime @map("start_time") @db.Timestamptz()
-  end        DateTime @map("end_time") @db.Timestamptz()
-  movieId    String
-  cinema     Cinema   @relation(fields: [cinemaId], references: [cinemaId], onDelete: Cascade)
-  movie      Movie    @relation(fields: [movieId], references: [movieId], onDelete: Cascade)
-  ticket     Ticket[]
+  id       String   @id @db.VarChar(50)
+  cinemaId String
+  start    DateTime @map("start_time") @db.Timestamptz()
+  end      DateTime @map("end_time") @db.Timestamptz()
+  movieId  String
+  cinema   Cinema   @relation(fields: [cinemaId], references: [id], onDelete: Cascade)
+  movie    Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  ticket   Ticket[]
 
   @@map("showtime")
 }
@@ -75,8 +74,24 @@ model Ticket {
   seatId     String
   showtimeId String
   user       User     @relation(fields: [userName], references: [userName])
-  seat       Seat     @relation(fields: [seatId], references: [seatId], onDelete: Cascade)
-  showtime   Showtime @relation(fields: [showtimeId], references: [showtimeId], onDelete: Cascade)
+  seat       Seat     @relation(fields: [seatId], references: [id], onDelete: Cascade)
+  showtime   Showtime @relation(fields: [showtimeId], references: [id], onDelete: Cascade)
 
   @@map("ticket")
+}
+
+model Banner {
+  id         String   @id @db.VarChar(255)
+  url        String   @db.VarChar(255)
+  carousel   Carousel @relation(fields: [carouselId], references: [id])
+  carouselId String
+
+  @@map("banner")
+}
+
+model Carousel {
+  id      String   @id @db.VarChar(255)
+  banners Banner[]
+
+  @@map("carousel")
 }
