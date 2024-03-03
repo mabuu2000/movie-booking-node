@@ -29,7 +29,7 @@ model Movie {
   description String     @db.Text
   trailer     String     @db.Text
   ongoing     Boolean    @db.Boolean
-  rating      Decimal    @db.Decimal(1, 1)
+  rating      Decimal    @db.Decimal(3, 1)
   releaseDate DateTime   @map("release_date") @db.Date
   poster      String     @db.Text
   title       String     @db.VarChar(50)

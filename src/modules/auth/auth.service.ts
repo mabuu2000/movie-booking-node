@@ -30,7 +30,11 @@ export class AuthService {
           hash,
         },
       });
-      return this.signToken(user.id, user.email);
+      const token = await this.signToken(user.id, user.email);
+      return {
+        meaningful_msg: 'Signed up successfully',
+        access_token: token.access_token,
+      };
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
@@ -58,7 +62,7 @@ export class AuthService {
   async signToken(
     userId: string,
     email: string,
-  ): Promise<{ access_token: string }> {
+  ): Promise<{ access_token: string; meaningful_msg: string }> {
     const payLoad = {
       sub: userId,
       email,
@@ -66,10 +70,11 @@ export class AuthService {
     const secret = this.config.get('JWT_SECRET');
 
     const token = await this.jwt.signAsync(payLoad, {
-      expiresIn: '3m',
+      expiresIn: '120m',
       secret: secret,
     });
     return {
+      meaningful_msg: 'Signed in successfully',
       access_token: token,
     };
   }

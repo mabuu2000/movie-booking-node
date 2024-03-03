@@ -1,9 +1,10 @@
-import { Global, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
-import { ConfigModule } from '@nestjs/config';
 import { UserController } from './modules/user/user.controller';
+import { MovieModule } from './modules/movie/movie.module';
 
 @Module({
   imports: [
@@ -13,7 +14,9 @@ import { UserController } from './modules/user/user.controller';
     AuthModule,
     UserModule,
     PrismaModule,
+    MovieModule,
   ],
   controllers: [UserController],
+  providers: [],
 })
 export class AppModule {}
