@@ -39,6 +39,8 @@ CREATE TABLE "cinema" (
 CREATE TABLE "seat" (
     "id" VARCHAR(255) NOT NULL,
     "seat_number" VARCHAR(255) NOT NULL,
+    "is_available" TEXT NOT NULL,
+    "cinemaId" TEXT NOT NULL,
 
     CONSTRAINT "seat_pkey" PRIMARY KEY ("id")
 );
@@ -46,9 +48,9 @@ CREATE TABLE "seat" (
 -- CreateTable
 CREATE TABLE "showtime" (
     "id" VARCHAR(50) NOT NULL,
-    "cinemaId" TEXT NOT NULL,
     "start_time" TIMESTAMPTZ NOT NULL,
     "end_time" TIMESTAMPTZ NOT NULL,
+    "cinemaId" TEXT NOT NULL,
     "movieId" TEXT NOT NULL,
 
     CONSTRAINT "showtime_pkey" PRIMARY KEY ("id")
@@ -88,6 +90,9 @@ CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "user_phone_number_key" ON "user"("phone_number");
+
+-- AddForeignKey
+ALTER TABLE "seat" ADD CONSTRAINT "seat_cinemaId_fkey" FOREIGN KEY ("cinemaId") REFERENCES "cinema"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "showtime" ADD CONSTRAINT "showtime_cinemaId_fkey" FOREIGN KEY ("cinemaId") REFERENCES "cinema"("id") ON DELETE CASCADE ON UPDATE CASCADE;
