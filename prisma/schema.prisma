@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(dbgenerated("uuid_generate_v4()"))
+  userName    String   @unique @map("user_name") @db.VarChar(50)
+  email       String   @unique @db.VarChar(50)
+  phoneNumber String   @unique @map("phone_number") @db.VarChar(50)
+  dob         String   @db.VarChar(50)
+  hash        String   @db.VarChar(255)
+  firstName   String   @map("first_name") @db.VarChar(50)
+  lastName    String   @map("last_name") @db.VarChar(50)
+  ticket      Ticket[]
+
+  @@map("user")
+}
+
+model Movie {
+  id          String     @id @db.VarChar(50)
+  description String     @db.Text
+  trailer     String     @db.Text
+  ongoing     Boolean    @db.Boolean
+  rating      Decimal    @db.Decimal(3, 1)
+  releaseDate DateTime   @map("release_date") @db.Date
+  poster      String     @db.Text
+  title       String     @db.VarChar(50)
+  genre       String     @db.VarChar(50)
+  showTime    Showtime[]
+
+  @@map("movie")
+}
+
+model Cinema {
+  id           String     @id @db.VarChar(10)
+  cinemaNumber String     @map("cinema_number") @db.VarChar(10)
+  seats        Seat[]
+  showTime     Showtime[]
+
+  @@map("cinema")
+}
+
+model Seat {
+  id          String   @id @db.VarChar(255)
+  seatNumber  String   @map("seat_number") @db.VarChar(255)
+  isAvailable String   @map("is_available")
+  cinemaId    String
+  cinema      Cinema   @relation(fields: [cinemaId], references: [id], onDelete: Cascade)
+  ticket      Ticket[]
+
+  @@map("seat")
+}
+
+model Showtime {
+  id       String   @id @db.VarChar(50)
+  start    DateTime @map("start_time") @db.Timestamptz()
+  end      DateTime @map("end_time") @db.Timestamptz()
+  cinemaId String
+  cinema   Cinema   @relation(fields: [cinemaId], references: [id], onDelete: Cascade)
+  movieId  String
+  movie    Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  ticket   Ticket[]
+
+  @@map("showtime")
+}
+
+model Ticket {
+  id         String   @id @default(dbgenerated("uuid_generate_v4()"))
+  userName   String
+  seatId     String
+  showtimeId String
+  user       User     @relation(fields: [userName], references: [userName])
+  seat       Seat     @relation(fields: [seatId], references: [id], onDelete: Cascade)
+  showtime   Showtime @relation(fields: [showtimeId], references: [id], onDelete: Cascade)
+
+  @@map("ticket")
+}
+
+model Banner {
+  id         String   @id @db.VarChar(255)
+  url        String   @db.VarChar(255)
+  carousel   Carousel @relation(fields: [carouselId], references: [id])
+  carouselId String
+
+  @@map("banner")
+}
+
+model Carousel {
+  id      String   @id @db.VarChar(255)
+  banners Banner[]
+
+  @@map("carousel")
+}
